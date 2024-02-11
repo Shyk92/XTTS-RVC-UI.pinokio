@@ -1,5 +1,7 @@
 {
-  "run": [
+  "run": [{
+    "method": "shell.start"
+  },
     {
       "method": "shell.run",
       "params": {
