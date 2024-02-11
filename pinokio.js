@@ -1,16 +1,12 @@
-const os = require('os');
-const fs = require('fs');
-const path = require("path");
-const exists = (filepath) => {
-  return new Promise(r => fs.access(filepath, fs.constants.F_OK, e => r(!e)));
-};
+
 
 module.exports = {
   title: "XTTS-RVC",
   description: "A Gradio UI for XTTSv2 and RVC, allowing for real-time voice conversion.",
   icon: "icon.jpg",
   menu: async (kernel) => {
-    let installed = await exists(path.resolve(__dirname, "env"));
+    let installed = await kernel.exists(__dirname, "app", "venv")
+    let installing = await kernel.running(__dirname, "install.js")
     if (installed) {
       let session = (await kernel.loader.load(path.resolve(__dirname, "session.json"))).resolved;
       return [{
