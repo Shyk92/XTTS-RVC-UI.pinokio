@@ -1,0 +1,52 @@
+{
+  "requires": [
+    { "type": "git", "name": "XTTS-RVC-UI", "repo": "https://github.com/Vali-98/XTTS-RVC-UI.git" },
+    { "platform": "darwin", "type": "brew", "name": "ffmpeg" },
+    { "platform": "win32", "type": "conda", "name": "ffmpeg", "args": "-c conda-forge" },
+    { "type": "python", "version": ">=3.6" }
+  ],
+  "run": [
+    {
+      "method": "shell.run",
+      "params": {
+        "message": "git clone https://github.com/Vali-98/XTTS-RVC-UI.git"
+      }
+    },
+    {
+      "method": "shell.run",
+      "params": {
+        "message": "{{os.platform() === 'win32' ? 'python' : 'python3'}} -m venv venv"
+      }
+    },
+    {
+      "method": "shell.enter",
+      "params": {
+        "message": "{{os.platform() === 'win32' ? 'venv\\\\Scripts\\\\activate' : 'source venv/bin/activate'}}"
+      }
+    },
+    {
+      "method": "shell.enter",
+      "params": {
+        "message": "pip install -r requirements.txt"
+      }
+    },
+    {
+      "method": "shell.enter",
+      "params": {
+        "conditional": "{{cuda_available() ? 'pip install torch==2.1.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118' : 'pip install torch torchaudio'}}"
+      }
+    },
+    {
+      "method": "shell.enter",
+      "params": {
+        "message": "python app.py",
+        "on": [
+          {
+            "event": "Gradio app running on",
+            "return": true
+          }
+        ]
+      }
+    }
+  ]
+}
