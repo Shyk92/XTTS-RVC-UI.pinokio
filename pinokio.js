@@ -7,33 +7,51 @@ module.exports = {
   menu: async (kernel) => {
     let installed = await kernel.exists(__dirname, "app", "venv")
     let installing = await kernel.running(__dirname, "install.js")
-    if (installed) {
-      let session = (await kernel.loader.load(path.resolve(__dirname, "session.json"))).resolved;
+    if (installing) {
       return [{
-        when: "start.json",
-        on: "<i class='fa-solid fa-spin fa-circle-notch'></i> Running",
-        type: "label",
-        href: "start.json"
-      }, {
-        when: "start.json",
-        off: "<i class='fa-solid fa-power-off'></i> Launch",
-        href: "start.json?fullscreen=true&run=true",
-      }, {
-        when: "start.json",
-        on: (session && session.url ? "<i class='fa-solid fa-rocket'></i> Open Web UI" : null),
-        href: (session && session.url ? session.url : null),
-        target: "_blank"
-      }, {
-        when: "start.json",
-        on: "<i class='fa-solid fa-desktop'></i> Server",
-        href: "start.json?fullscreen=true"
-      }];
+        icon: "fa-solid fa-plug",
+        text: "Installing",
+        href: "install.js",
+      }]
+    } else if (installed) {
+      let session = await kernel.require(__dirname, "session.json")
+      let running = await kernel.running(__dirname, "start.json")
+      if (running) {
+        if (session && session.url) {
+          return [{
+            icon: "fa-solid fa-rocket",
+            text: "Open UI",
+            href: session.url,
+          }, {
+            icon: 'fa-solid fa-terminal',
+            text: "Terminal",
+            href: "start.json",
+          }]
+        } else {
+          return [{
+            icon: 'fa-solid fa-terminal',
+            text: "Terminal",
+            href: "start.json",
+          }]
+        }
+      } else {
+        return [{
+          icon: "fa-solid fa-power-off",
+          text: "Start",
+          href: "start.json",
+        }, {
+          icon: "fa-solid fa-plug",
+          text: "Install",
+          href: "install.js",
+        }]
+      }
     } else {
       return [{
-        html: '<i class="fa-solid fa-plug"></i> Install',
-        type: "link",
-        href: "install.json?run=true&fullscreen=true"
-      }];
+        icon: "fa-solid fa-plug",
+        text: "Install",
+        href: "install.json",
+        params: { run: true, fullscreen: true }
+      }]
     }
   }
 }
