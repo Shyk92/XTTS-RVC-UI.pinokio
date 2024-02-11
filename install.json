@@ -1,10 +1,4 @@
 {
-  "requires": [
-    { "type": "git", "name": "XTTS-RVC-UI", "repo": "https://github.com/Vali-98/XTTS-RVC-UI.git" },
-    { "platform": "darwin", "type": "brew", "name": "ffmpeg" },
-    { "platform": "win32", "type": "conda", "name": "ffmpeg", "args": "-c conda-forge" },
-    { "type": "python", "version": ">=3.6" }
-  ],
   "run": [
     {
       "method": "shell.run",
