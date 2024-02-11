@@ -50,8 +50,6 @@
         ]
       }
     },
-      }
-    },
     {
       "method": "shell.enter",
       "params": {
