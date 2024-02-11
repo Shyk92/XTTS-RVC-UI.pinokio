@@ -6,30 +6,62 @@
       "method": "shell.run",
       "params": {
         "message": "git clone https://github.com/Vali-98/XTTS-RVC-UI.git"
+        "on": [
+          {
+            "event": null,
+            "return": true
+          }
+        ]
       }
     },
     {
       "method": "shell.run",
       "params": {
         "message": "{{os.platform() === 'win32' ? 'python' : 'python3'}} -m venv venv"
+        "on": [
+          {
+            "event": null,
+            "return": true
+          }
+        ]
       }
     },
     {
       "method": "shell.enter",
       "params": {
         "message": "{{os.platform() === 'win32' ? 'venv\\\\Scripts\\\\activate' : 'source venv/bin/activate'}}"
+        "on": [
+          {
+            "event": null,
+            "return": true
+          }
+        ]
       }
     },
     {
       "method": "shell.enter",
       "params": {
-        "message": "pip install -r requirements.txt"
+        "message": "pip install --upgrade -r requirements.txt"
+        "on": [
+          {
+            "event": null,
+            "return": true
+          }
+        ]
+      }
+    },
       }
     },
     {
       "method": "shell.enter",
       "params": {
         "conditional": "{{cuda_available() ? 'pip install torch==2.1.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118' : 'pip install torch torchaudio'}}"
+        "on": [
+          {
+            "event": null,
+            "return": true
+          }
+        ]
       }
     },
     {
