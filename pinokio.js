@@ -8,7 +8,7 @@ const exists = (filepath) => {
 module.exports = {
   title: "XTTS-RVC",
   description: "A Gradio UI for XTTSv2 and RVC, allowing for real-time voice conversion.",
-  icon: "icon.png",
+  icon: "icon.jpg",
   menu: async (kernel) => {
     let installed = await exists(path.resolve(__dirname, "env"));
     if (installed) {
