@@ -10,7 +10,8 @@ module.exports = {
   description: "A Gradio UI for XTTSv2 and RVC, allowing for real-time voice conversion.",
   icon: "icon.jpg",
   menu: async (kernel) => {
-    let installed = await exists(path.resolve(__dirname, "env"))
+    let installed = await exists(path.resolve(__dirname, "XTTS-RVC-UI.pinokio
+"))
     if (installed) {
       let session = (await kernel.loader.load(path.resolve(__dirname, "session.json"))).resolved
       return [{
