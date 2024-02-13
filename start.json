@@ -1,24 +1,55 @@
 {
   "run": [
     {
+      "method": "shell.start",
+      "params": {
+        "env": {
+          "HF_HOME": "./huggingface",
+          "ALLOW_FILE_UPLOAD": "True"
+        }
+      }
+    },
+    {
       "method": "shell.enter",
       "params": {
-        "message": "{{os.platform() === 'darwin' ? 'python3 ./XTTS-RVC-UI/app.py' : 'python ./XTTS-RVC-UI/app.py'}}",
+        "message": "{{os.platform() === 'win32' ? 'venv\\\\Scripts\\\\activate' : 'source venv/bin/activate'}}",
         "on": [
           {
-            "event": "Gradio app running on",
+            "event": null,
             "return": true
           }
         ]
       }
-  }
-],
-  "finalize": [
+    },
     {
-      "action": "openBrowser",
-      "parameters": {
-        "url": "http://localhost:7890" 
+      "method": "shell.enter",
+      "params": {
+        "message": "{{os.platform() === 'darwin' ? 'python XTTS-RVC-UI/app.py' : 'python XTTS-RVC-UI/app.py'}}",
+        "on": [
+          {
+            "event": "/(http://[0-9.:]+)/",
+            "return": "{{event.matches[0][1]}}"
+          }
+        ]
       }
+    },
+    {
+      "method": "self.set",
+      "params": {
+        "session.json": {
+          "url": "{{input}}"
+        }
+      }
+    },
+    {
+      "method": "browser.open",
+      "params": {
+        "uri": "{{self.session.url}}",
+        "target": "_blank"
+      }
+    },
+    {
+      "method": "process.wait"
     }
   ]
 }
