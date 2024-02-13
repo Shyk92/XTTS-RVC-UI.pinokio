@@ -1,43 +1,23 @@
 {
-  "setup": [
-    {
-      "action": "cloneRepository",
-      "parameters": {
-        "url": "https://github.com/Vali-98/XTTS-RVC-UI.git"
-      }
-    },
-    {
-      "action": "createVirtualEnvironment",
-      "parameters": {
-        "name": "xttsrvc-env"
-      }
-    },
-    {
-      "action": "activateVirtualEnvironment",
-      "parameters": {
-        "name": "xttsrvc-env"
-      }
-    },
-    {
-      "action": "installDependencies",
-      "parameters": {
-        "file": "requirements.txt"
-      }
-    }
-  ],
   "run": [
     {
-      "action": "executeCommand",
-      "parameters": {
-        "command": "python app.py"
+      "method": "shell.enter",
+      "params": {
+        "message": "{{os.platform() === 'darwin' ? 'python3 ./XTTS-RVC-UI/app.py' : 'python ./XTTS-RVC-UI/app.py'}}",
+        "on": [
+          {
+            "event": "Gradio app running on",
+            "return": true
+          }
+        ]
       }
-    }
-  ],
+  }
+],
   "finalize": [
     {
       "action": "openBrowser",
       "parameters": {
-        "url": "http://localhost:7860" // Assuming this is the default Gradio URL
+        "url": "http://localhost:7890" 
       }
     }
   ]
