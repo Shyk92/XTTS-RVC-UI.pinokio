@@ -73,6 +73,17 @@
           }
         ]
       }
+    },{
+      "method": "shell.enter",
+      "params": {
+        "message": "cp ./app.py ./XTTS-RVC-UI/app.py",
+        "on": [
+          {
+            "event": null,
+            "return": true
+          }
+        ]
+      }
     },
     {
       "method": "shell.enter",
@@ -89,7 +100,7 @@
     {
       "method": "shell.enter",
       "params": {
-        "message": "python app.py",
+        "message": "{{os.platform() === 'darwin' ? 'python3 TTS-RVC-UI/app.py' : 'python TTS-RVC-UI/app.py'",
         "on": [
           {
             "event": "Gradio app running on",
