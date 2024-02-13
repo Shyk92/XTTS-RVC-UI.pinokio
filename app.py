@@ -1,7 +1,7 @@
 import torch
-from XTTS-RVC-UI.pinokio.git.TTS.api import TTS
+from XTTS-RVC-UI.TTS.api import TTS
 import gradio as gr
-from XTTS-RVC-UI.pinokio.git.rvc import Config, load_hubert, get_vc, rvc_infer
+from XTTS-RVC-UI.rvc import Config, load_hubert, get_vc, rvc_infer
 import gc , os, sys, argparse, requests
 from pathlib import Path
 
@@ -21,23 +21,23 @@ def download_models():
 	rvc_files = ['hubert_base.pt', 'rmvpe.pt']
 
 	for file in rvc_files: 
-		if(not os.path.isfile(f'./XTTS-RVC-UI.pinokio.git/models/{file}')):
+		if(not os.path.isfile(f'./XTTS-RVC-UI/models/{file}')):
 			print(f'Downloading{file}')
 			r = requests.get(f'https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/{file}')
-			with open(f'./XTTS-RVC-UI.pinokio.git/models/{file}', 'wb') as f:
+			with open(f'./XTTS-RVC-UI/models/{file}', 'wb') as f:
 					f.write(r.content)
 
 	xtts_files = ['vocab.json', 'config.json', 'dvae.path', 'mel_stats.pth', 'model.pth']
 
 	for file in xtts_files:
-		if(not os.path.isfile(f'./XTTS-RVC-UI.pinokio.git/models/xtts/{file}')):
+		if(not os.path.isfile(f'./XTTS-RVC-UI/models/xtts/{file}')):
 			print(f'Downloading {file}')
 			r = requests.get(f'https://huggingface.co/coqui/XTTS-v2/resolve/v2.0.2/{file}')
-			with open(f'./XTTS-RVC-UI.pinokio.git/models/xtts/{file}', 'wb') as f:
+			with open(f'./XTTS-RVC-UI/models/xtts/{file}', 'wb') as f:
 				f.write(r.content)
 				
 
-[Path(_dir).mkdir(parents=True, exist_ok=True) for _dir in ['./XTTS-RVC-UI.pinokio.git/models/xtts', './XTTS-RVC-UI.pinokio.git/voices', './XTTS-RVC-UI.pinokio.git/rvcs']]
+[Path(_dir).mkdir(parents=True, exist_ok=True) for _dir in ['./XTTS-RVC-UI/models/xtts', './XTTS-RVC-UI/voices', './XTTS-RVC-UI/rvcs']]
 
 download_models()
 
@@ -45,23 +45,23 @@ device = "cuda:0" if torch.cuda.is_available() else "cpu"
 print("Device: " + device) 
 
 config = Config(device, device != 'cpu')
-hubert_model = load_hubert(device, config.is_half, "./XTTS-RVC-UI.pinokio.git/models/hubert_base.pt")
-tts = TTS(model_path="./XTTS-RVC-UI.pinokio.git/models/xtts", config_path='./XTTS-RVC-UI.pinokio.git/models/xtts/config.json').to(device)
+hubert_model = load_hubert(device, config.is_half, "./XTTS-RVC-UI/models/hubert_base.pt")
+tts = TTS(model_path="./XTTS-RVC-UI/models/xtts", config_path='./XTTS-RVC-UI/models/xtts/config.json').to(device)
 voices = []
 rvcs = []
 langs = ["en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl", "cs", "ar", "zh-cn", "hu", "ko", "ja", "hi"]
 
 def get_rvc_voices():
 	global voices 
-	voices = os.listdir("./XTTS-RVC-UI.pinokio.git/voices")
+	voices = os.listdir("./XTTS-RVC-UI/voices")
 	global rvcs
-	rvcs = list(filter(lambda x:x.endswith(".pth"), os.listdir("./XTTS-RVC-UI.pinokio.git/rvcs")))
+	rvcs = list(filter(lambda x:x.endswith(".pth"), os.listdir("./XTTS-RVC-UI/rvcs")))
 	return [rvcs, voices]
 
 def runtts(rvc, voice, text, pitch_change, index_rate, language): 
-    audio = tts.tts_to_file(text=text, speaker_wav="./voices/" + voice, language=language, file_path="./XTTS-RVC-UI.pinokio.git/output.wav")
+    audio = tts.tts_to_file(text=text, speaker_wav="./voices/" + voice, language=language, file_path="./XTTS-RVC-UI/output.wav")
     voice_change(rvc, pitch_change, index_rate)
-    return ["./XTTS-RVC-UI.pinokio.git/output.wav" , "./XTTS-RVC-UI.pinokio.git/outputrvc.wav"]
+    return ["./XTTS-RVC-UI/output.wav" , "./XTTS-RVC-UI/outputrvc.wav"]
 
 def main():
 	get_rvc_voices()
@@ -120,8 +120,8 @@ rvc_data = RVC_Data()
 def voice_change(rvc, pitch_change, index_rate):
 	modelname = os.path.splitext(rvc)[0]
 	print("Using RVC model: "+ modelname)
-	rvc_model_path = "./XTTS-RVC-UI.pinokio.git/rvcs/" + rvc  
-	rvc_index_path = "./XTTS-RVC-UI.pinokio.git/rvcs/" + modelname + ".index" if os.path.isfile("./XTTS-RVC-UI.pinokio.git/rvcs/" + modelname + ".index") and index_rate != 0 else ""
+	rvc_model_path = "./XTTS-RVC-UI/rvcs/" + rvc  
+	rvc_index_path = "./XTTS-RVC-UI/rvcs/" + modelname + ".index" if os.path.isfile("./XTTS-RVC-UI/rvcs/" + modelname + ".index") and index_rate != 0 else ""
 
 	if rvc_index_path != "" :
 		print("Index file found!")
@@ -133,8 +133,8 @@ def voice_change(rvc, pitch_change, index_rate):
 	rvc_infer(
 		index_path=rvc_index_path, 
 		index_rate=index_rate, 
-		input_path="./XTTS-RVC-UI.pinokio.git/output.wav", 
-		output_path="./XTTS-RVC-UI.pinokio.git/outputrvc.wav", 
+		input_path="./XTTS-RVC-UI/output.wav", 
+		output_path="./XTTS-RVC-UI/outputrvc.wav", 
 		pitch_change=pitch_change, 
 		f0_method="rmvpe", 
 		cpt=rvc_data.cpt, 
