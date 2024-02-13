@@ -100,7 +100,7 @@
     {
       "method": "shell.enter",
       "params": {
-        "message": "{{os.platform() === 'darwin' ? 'python3 TTS-RVC-UI/app.py' : 'python TTS-RVC-UI/app.py'",
+        "message": "{{os.platform() === 'darwin' ? 'python3 TTS-RVC-UI/app.py' : 'python TTS-RVC-UI/app.py'}}",
         "on": [
           {
             "event": "Gradio app running on",
