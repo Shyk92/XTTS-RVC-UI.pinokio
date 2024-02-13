@@ -42,11 +42,13 @@ def download_models():
 download_models()
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
+if not torch.cuda.is_available() and torch.backends.mps.is_available():
+    device = "mps"
 print("Device: " + device) 
 
 config = Config(device, device != 'cpu')
 hubert_model = load_hubert(device, config.is_half, "./models/hubert_base.pt")
-tts = TTS(model_path="./models/xtts", config_path='./models/xtts/config.json').to(device)
+tts = TTS(model_path="../models/xtts", config_path='./models/xtts/config.json').to(device)
 voices = []
 rvcs = []
 langs = ["en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl", "cs", "ar", "zh-cn", "hu", "ko", "ja", "hi"]
