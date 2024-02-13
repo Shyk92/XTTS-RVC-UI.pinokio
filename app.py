@@ -1,5 +1,3 @@
-import sys
-sys.path.append('/XTTS-RVC-UI')
 import torch
 from TTS.api import TTS
 import gradio as gr
@@ -63,9 +61,11 @@ rvcs = []
 langs = ["en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl", "cs", "ar", "zh-cn", "hu", "ko", "ja", "hi"]
 
 def get_rvc_voices():
+	global voices 
 	voices = os.listdir("./voices")
-	rvcs = list(filter(lambda x: x.endswith(".pth"), os.listdir("./rvcs")))
-	return rvcs, voices
+	global rvcs
+	rvcs = list(filter(lambda x:x.endswith(".pth"), os.listdir("./rvcs")))
+	return [rvcs, voices]
 
 def runtts(rvc, voice, text, pitch_change, index_rate, language): 
 	audio = tts.tts_to_file(text=text, speaker_wav="./voices/" + voice, language=language, file_path="./output.wav")
@@ -121,7 +121,7 @@ class RVC_Data:
 		if self.current_model != modelname:
 				print("Loading new model")
 				del self.cpt, self.version, self.net_g, self.tgt_sr, self.vc
-				self.cpt, self.version, self.net_g, self.tgt_sr, self.vc = get_vc(device, config.is_half, config, rvc_model_path)
+				self.cpt, self.version, self.net_g, self.tgt_sr, self.vc = get_vc(rvc_device, config.is_half, config, rvc_model_path)
 				self.current_model = modelname
 
 rvc_data = RVC_Data()
@@ -149,10 +149,10 @@ def voice_change(rvc, pitch_change, index_rate):
 		cpt=rvc_data.cpt, 
 		version=rvc_data.version, 
 		net_g=rvc_data.net_g, 
-		filter_radius=3, 
+		filter_radius=6, 
 		tgt_sr=rvc_data.tgt_sr, 
 		rms_mix_rate=0.25, 
-		protect=0, 
+		protect=0.15, 
 		crepe_hop_length=0, 
 		vc=rvc_data.vc, 
 		hubert_model=hubert_model
