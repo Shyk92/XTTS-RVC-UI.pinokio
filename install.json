@@ -73,17 +73,6 @@
           }
         ]
       }
-    },{
-      "method": "shell.enter",
-      "params": {
-        "message": "cp ./app.py ./XTTS-RVC-UI/app.py",
-        "on": [
-          {
-            "event": null,
-            "return": true
-          }
-        ]
-      }
     },
     {
       "method": "shell.enter",
@@ -100,7 +89,7 @@
     {
       "method": "shell.enter",
       "params": {
-        "message": "python XTTS-RVC-UI/app.py",
+        "message": "python app.py",
         "on": [
           {
             "event": "Gradio app running on",
